@@ -9,10 +9,7 @@ import de.timesnake.library.waitinggames.games.PunchArea;
 import de.timesnake.library.waitinggames.games.WaitingGame;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WaitingGameManager {
 
@@ -39,24 +36,26 @@ public class WaitingGameManager {
 
             GameFile file = entry.getValue();
 
-            List<WaitingGame> games = new ArrayList<>();
+            List<WaitingGame> games = new LinkedList<>();
+            List<Integer> ids = new LinkedList<>();
 
             for (Integer id : file.getGameIds()) {
                 String type = file.getGameType(id);
 
                 try {
                     switch (type.toLowerCase()) {
-                        case PunchArea.NAME:
+                        case PunchArea.NAME -> {
                             games.add(new PunchArea(file, id));
-                            Server.printText(Plugin.WAITING_GAME, "Loaded punch area " + id);
-                            break;
-                        case JumpRun.NAME:
+                            ids.add(id);
+                        }
+                        case JumpRun.NAME -> {
                             games.add(new JumpRun(file, id));
-                            Server.printText(Plugin.WAITING_GAME, "Loaded jump run " + id);
-                            break;
-                        case MlgWater.NAME:
+                            ids.add(id);
+                        }
+                        case MlgWater.NAME -> {
                             games.add(new MlgWater(file, id));
-                            Server.printText(Plugin.WAITING_GAME, "Loaded mlg water" + id);
+                            ids.add(id);
+                        }
                     }
                 } catch (GameLoadException e) {
                     Server.printWarning(Plugin.WAITING_GAME, e.getMessage());
@@ -65,7 +64,8 @@ public class WaitingGameManager {
 
             this.gamesByWorld.put(entry.getKey(), games);
 
-            Server.printText(Plugin.WAITING_GAME, "Loaded waiting games in world " + entry.getKey().getName());
+            Server.printText(Plugin.WAITING_GAME, "Loaded waiting games in world " + entry.getKey().getName() + ": " +
+                    Arrays.toString(ids.toArray()));
         }
 
         Server.printText(Plugin.WAITING_GAME, "Loaded waiting game manager");
