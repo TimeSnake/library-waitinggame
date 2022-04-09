@@ -32,6 +32,7 @@ public class GameFile extends ExFile {
         for (Tuple<String, ?> value : values) {
             super.set(this.getGamePath(id) + "." + value.getA(), value.getB());
         }
+        super.save();
 
         return id;
     }
@@ -42,6 +43,8 @@ public class GameFile extends ExFile {
         }
 
         super.set(this.getGamePath(id) + "." + value.getA(), value.getB());
+
+        super.save();
 
         return true;
     }
