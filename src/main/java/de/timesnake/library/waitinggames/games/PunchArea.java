@@ -30,7 +30,8 @@ public class PunchArea extends WaitingGame {
 
         GameFile file = WaitingGameManager.getInstance().getGameFile(center.getExWorld());
 
-        super.id = file.addGame(NAME, new Tuple<>(CENTER, center), new Tuple<>(RADIUS, radius), new Tuple<>(HEIGHT, height));
+        super.id = file.addGame(NAME, new Tuple<>(CENTER, center), new Tuple<>(RADIUS, radius), new Tuple<>(HEIGHT,
+                height));
     }
 
     public PunchArea(GameFile file, int id) throws GameLoadException {
