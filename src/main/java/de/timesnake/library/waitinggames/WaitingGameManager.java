@@ -14,19 +14,14 @@ import java.util.*;
 public class WaitingGameManager {
 
     private static WaitingGameManager instance;
-
-    public static WaitingGameManager getInstance() {
-        return instance;
-    }
-
     private final HashMap<ExWorld, GameFile> gameFilesByWorld = new HashMap<>();
     private final HashMap<ExWorld, List<WaitingGame>> gamesByWorld = new HashMap<>();
-
     public WaitingGameManager() {
         instance = this;
 
         for (ExWorld world : Server.getWorlds()) {
-            File gameFile = new File(world.getWorldFolder().getAbsolutePath() + File.separator + GameFile.NAME + ".yml");
+            File gameFile = new File(world.getWorldFolder().getAbsolutePath() + File.separator + GameFile.NAME +
+                    ".yml");
             if (gameFile.exists()) {
                 this.gameFilesByWorld.put(world, new GameFile(world));
             }
@@ -69,6 +64,10 @@ public class WaitingGameManager {
         }
 
         Server.printText(Plugin.WAITING_GAME, "Loaded waiting game manager");
+    }
+
+    public static WaitingGameManager getInstance() {
+        return instance;
     }
 
     public GameFile getGameFile(ExWorld world) {

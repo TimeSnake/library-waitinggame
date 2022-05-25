@@ -68,8 +68,10 @@ public class JumpRun extends WaitingGame implements Listener, UserInventoryInter
             throw new GameLoadException(NAME, id);
         }
 
-        this.start = new ExLocation(Server.getWorld(startLoc.getWorld()), startLoc.getX(), startLoc.getY(), startLoc.getZ());
-        this.finish = new ExLocation(Server.getWorld(finishLoc.getWorld()), finishLoc.getX(), finishLoc.getY(), finishLoc.getZ());
+        this.start = new ExLocation(Server.getWorld(startLoc.getWorld()), startLoc.getX(), startLoc.getY(),
+                startLoc.getZ());
+        this.finish = new ExLocation(Server.getWorld(finishLoc.getWorld()), finishLoc.getX(), finishLoc.getY(),
+                finishLoc.getZ());
 
         Server.registerListener(this);
         Server.getInventoryEventManager().addInteractListener(this, this.startItem, this.leaveItem);
@@ -106,7 +108,8 @@ public class JumpRun extends WaitingGame implements Listener, UserInventoryInter
             user.clearInventory();
             user.getInventory().setContents(this.inventoriesByUser.remove(user));
             user.sendTitle("§6Finished", "", Duration.ofSeconds(2));
-            Server.broadcastMessage(Plugin.WAITING_GAME, user.getChatName() + ChatColor.PUBLIC + " finished the Jump'n Run");
+            Server.broadcastMessage(Plugin.WAITING_GAME, user.getChatName() + ChatColor.PUBLIC + " finished the " +
+                    "Jump'n Run");
         }
     }
 

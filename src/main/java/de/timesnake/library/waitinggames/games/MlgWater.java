@@ -64,7 +64,8 @@ public class MlgWater extends WaitingGame implements Listener, UserInventoryInte
             throw new GameLoadException(NAME, id);
         }
 
-        this.start = new ExLocation(Server.getWorld(startLoc.getWorld()), startLoc.getX(), startLoc.getY(), startLoc.getZ());
+        this.start = new ExLocation(Server.getWorld(startLoc.getWorld()), startLoc.getX(), startLoc.getY(),
+                startLoc.getZ());
         this.height = height;
 
         Server.registerListener(this);
