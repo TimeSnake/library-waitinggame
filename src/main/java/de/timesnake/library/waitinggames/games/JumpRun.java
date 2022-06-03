@@ -69,7 +69,7 @@ public class JumpRun extends WaitingGame implements Listener, UserInventoryInter
         }
 
         this.start = new ExLocation(Server.getWorld(startLoc.getWorld()), startLoc.getX(), startLoc.getY(),
-                startLoc.getZ());
+                startLoc.getZ(), startLoc.getYaw(), startLoc.getPitch());
         this.finish = new ExLocation(Server.getWorld(finishLoc.getWorld()), finishLoc.getX(), finishLoc.getY(),
                 finishLoc.getZ());
 
