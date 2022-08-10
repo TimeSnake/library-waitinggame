@@ -88,7 +88,7 @@ public class JumpRun extends WaitingGame implements Listener, UserInventoryInter
             }
 
             this.users.add(user);
-            user.sendTitle("§9Jump'n Run", "", Duration.ofSeconds(2));
+            user.sendTitle("", "§9Jump'n Run", Duration.ofSeconds(2));
 
             this.inventoriesByUser.put(user, user.getInventory().getContents());
             user.clearInventory();
@@ -149,7 +149,7 @@ public class JumpRun extends WaitingGame implements Listener, UserInventoryInter
             this.users.remove(user);
             user.clearInventory();
             user.getInventory().setContents(this.inventoriesByUser.remove(user));
-            user.sendTitle("§cLeft", "", Duration.ofSeconds(2));
+            user.sendTitle("", "§cLeft", Duration.ofSeconds(2));
         }
     }
 }
