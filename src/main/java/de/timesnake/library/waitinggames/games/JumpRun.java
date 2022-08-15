@@ -1,7 +1,6 @@
 package de.timesnake.library.waitinggames.games;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.exceptions.WorldNotExistException;
 import de.timesnake.basic.bukkit.util.user.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
@@ -11,10 +10,12 @@ import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.library.basic.util.Tuple;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.waitinggames.GameFile;
 import de.timesnake.library.waitinggames.GameLoadException;
 import de.timesnake.library.waitinggames.Plugin;
 import de.timesnake.library.waitinggames.WaitingGameManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -88,7 +89,7 @@ public class JumpRun extends WaitingGame implements Listener, UserInventoryInter
             }
 
             this.users.add(user);
-            user.sendTitle("", "§9Jump'n Run", Duration.ofSeconds(2));
+            user.showTitle(Component.empty(), Component.text("Jump'n Run", ExTextColor.BLUE), Duration.ofSeconds(2));
 
             this.inventoriesByUser.put(user, user.getInventory().getContents());
             user.clearInventory();
@@ -107,9 +108,9 @@ public class JumpRun extends WaitingGame implements Listener, UserInventoryInter
             this.users.remove(user);
             user.clearInventory();
             user.getInventory().setContents(this.inventoriesByUser.remove(user));
-            user.sendTitle("§6Finished", "", Duration.ofSeconds(2));
-            Server.broadcastMessage(Plugin.WAITING_GAME, user.getChatName() + ChatColor.PUBLIC + " finished the " +
-                    "Jump'n Run");
+            user.showTitle(Component.text("Finished", ExTextColor.GOLD), Component.empty(), Duration.ofSeconds(2));
+            Server.broadcastMessage(Plugin.WAITING_GAME, user.getChatNameComponent()
+                    .append(Component.text(" finished the Jump'n Run", ExTextColor.PUBLIC)));
         }
     }
 
@@ -149,7 +150,7 @@ public class JumpRun extends WaitingGame implements Listener, UserInventoryInter
             this.users.remove(user);
             user.clearInventory();
             user.getInventory().setContents(this.inventoriesByUser.remove(user));
-            user.sendTitle("", "§cLeft", Duration.ofSeconds(2));
+            user.showTitle(Component.empty(), Component.text("Left", ExTextColor.WARNING), Duration.ofSeconds(2));
         }
     }
 }
