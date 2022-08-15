@@ -7,9 +7,11 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.*;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.library.basic.util.Tuple;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.waitinggames.GameFile;
 import de.timesnake.library.waitinggames.GameLoadException;
 import de.timesnake.library.waitinggames.WaitingGameManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -83,7 +85,7 @@ public class MlgWater extends WaitingGame implements Listener, UserInventoryInte
             }
 
             this.users.add(user);
-            user.sendTitle("§9MLG Water", "", Duration.ofSeconds(2));
+            user.showTitle(Component.text("MLG Water", ExTextColor.BLUE), Component.empty(), Duration.ofSeconds(2));
 
             this.inventoriesByUser.put(user, user.getInventory().getContents());
             user.clearInventory();
@@ -102,7 +104,7 @@ public class MlgWater extends WaitingGame implements Listener, UserInventoryInte
             this.users.remove(user);
             user.clearInventory();
             user.getInventory().setContents(this.inventoriesByUser.remove(user));
-            user.sendTitle("§6Finished", "", Duration.ofSeconds(2));
+            user.showTitle(Component.text("Finished", ExTextColor.GOLD), Component.empty(), Duration.ofSeconds(2));
         }
     }
 
@@ -128,7 +130,7 @@ public class MlgWater extends WaitingGame implements Listener, UserInventoryInte
             this.users.remove(user);
             user.clearInventory();
             user.getInventory().setContents(this.inventoriesByUser.remove(user));
-            user.sendTitle("§cFailed", "", Duration.ofSeconds(2));
+            user.showTitle(Component.text("Failed", ExTextColor.WARNING), Component.empty(), Duration.ofSeconds(2));
         }
         return false;
     }
@@ -155,7 +157,7 @@ public class MlgWater extends WaitingGame implements Listener, UserInventoryInte
             this.users.remove(user);
             user.clearInventory();
             user.getInventory().setContents(this.inventoriesByUser.remove(user));
-            user.sendTitle("§cLeft", "", Duration.ofSeconds(2));
+            user.showTitle(Component.text("Left", ExTextColor.WARNING), Component.empty(), Duration.ofSeconds(2));
         }
     }
 }
