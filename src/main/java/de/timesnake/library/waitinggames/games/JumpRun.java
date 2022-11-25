@@ -1,5 +1,5 @@
 /*
- * library-waiting-game.main
+ * workspace.library-waitinggame.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -19,7 +19,7 @@
 package de.timesnake.library.waitinggames.games;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.exceptions.WorldNotExistException;
+import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
 import de.timesnake.basic.bukkit.util.user.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractEvent;
