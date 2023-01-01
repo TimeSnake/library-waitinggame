@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.library.waitinggames;
@@ -29,8 +29,9 @@ public class WaitingGameManager {
         instance = this;
 
         for (ExWorld world : Server.getWorlds()) {
-            File gameFile = new File(world.getWorldFolder().getAbsolutePath() + File.separator + GameFile.NAME +
-                    ".yml");
+            File gameFile = new File(
+                    world.getWorldFolder().getAbsolutePath() + File.separator + GameFile.NAME +
+                            ".yml");
             if (gameFile.exists()) {
                 this.gameFilesByWorld.put(world, new GameFile(world));
             }
@@ -68,8 +69,9 @@ public class WaitingGameManager {
 
             this.gamesByWorld.put(entry.getKey(), games);
 
-            Server.printText(Plugin.WAITING_GAME, "Loaded waiting games in world " + entry.getKey().getName() + ": " +
-                    Arrays.toString(ids.toArray()));
+            Server.printText(Plugin.WAITING_GAME,
+                    "Loaded waiting games in world " + entry.getKey().getName() + ": " +
+                            Arrays.toString(ids.toArray()));
         }
 
         Server.printText(Plugin.WAITING_GAME, "Loaded waiting game manager");
