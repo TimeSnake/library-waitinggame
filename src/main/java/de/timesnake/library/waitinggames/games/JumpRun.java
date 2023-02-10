@@ -6,10 +6,10 @@ package de.timesnake.library.waitinggames.games;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
-import de.timesnake.basic.bukkit.util.user.ExItemStack;
+import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractEvent;
-import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractListener;
+import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
+import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
