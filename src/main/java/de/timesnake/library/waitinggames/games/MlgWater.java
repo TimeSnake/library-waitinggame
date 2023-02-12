@@ -13,7 +13,7 @@ import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.library.basic.util.Tuple;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.waitinggames.GameFile;
 import de.timesnake.library.waitinggames.GameLoadException;
 import de.timesnake.library.waitinggames.WaitingGameManager;
