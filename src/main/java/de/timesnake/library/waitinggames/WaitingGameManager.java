@@ -7,13 +7,17 @@ package de.timesnake.library.waitinggames;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.waitinggames.games.JumpRun;
 import de.timesnake.library.waitinggames.games.MlgWater;
 import de.timesnake.library.waitinggames.games.PunchArea;
 import de.timesnake.library.waitinggames.games.WaitingGame;
-
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class WaitingGameManager {
 
@@ -63,18 +67,17 @@ public class WaitingGameManager {
                         }
                     }
                 } catch (GameLoadException e) {
-                    Server.printWarning(Plugin.WAITING_GAME, e.getMessage());
+                    Loggers.GAME.warning(e.getMessage());
                 }
             }
 
             this.gamesByWorld.put(entry.getKey(), games);
 
-            Server.printText(Plugin.WAITING_GAME,
-                    "Loaded waiting games in world " + entry.getKey().getName() + ": " +
-                            Arrays.toString(ids.toArray()));
+            Loggers.GAME.info("Loaded waiting games in world " + entry.getKey().getName() + ": " +
+                    Arrays.toString(ids.toArray()));
         }
 
-        Server.printText(Plugin.WAITING_GAME, "Loaded waiting game manager");
+        Loggers.GAME.info("Loaded waiting game manager");
     }
 
     public GameFile getGameFile(ExWorld world) {
