@@ -17,85 +17,89 @@ import org.bukkit.Location;
 
 public class PunchArea extends WaitingGame {
 
-    public static final String NAME = "punch_area";
+  public static final String NAME = "punch_area";
 
-    private static final String CENTER = "center";
-    private static final String RADIUS = "radius";
-    private static final String HEIGHT = "height";
+  private static final String CENTER = "center";
+  private static final String RADIUS = "radius";
+  private static final String HEIGHT = "height";
 
-    private final ExLocation center;
-    private final Double radius;
-    private final Double height;
+  private final ExLocation center;
+  private final Double radius;
+  private final Double height;
 
-    public PunchArea(ExLocation center, Double radius, Double height) {
-        this.center = center;
-        this.radius = radius;
-        this.height = height;
+  public PunchArea(ExLocation center, Double radius, Double height) {
+    this.center = center;
+    this.radius = radius;
+    this.height = height;
 
-        GameFile file = WaitingGameManager.getInstance().getGameFile(center.getExWorld());
+    GameFile file = WaitingGameManager.getInstance().getGameFile(center.getExWorld());
 
-        super.id = file.addGame(NAME, new Tuple<>(CENTER, center), new Tuple<>(RADIUS, radius), new Tuple<>(HEIGHT,
-                height));
+    super.id = file.addGame(NAME, new Tuple<>(CENTER, center), new Tuple<>(RADIUS, radius),
+        new Tuple<>(HEIGHT,
+            height));
+  }
+
+  public PunchArea(GameFile file, int id) throws GameLoadException {
+    super(id);
+
+    if (!file.containsGame(id)) {
+      throw new GameLoadException(NAME, id);
     }
 
-    public PunchArea(GameFile file, int id) throws GameLoadException {
-        super(id);
+    Location loc = null;
 
-        if (!file.containsGame(id)) {
-            throw new GameLoadException(NAME, id);
-        }
-
-        Location loc = null;
-
-        try {
-            loc = file.getLocationValue(id, CENTER);
-        } catch (WorldNotExistException ignored) {
-        }
-
-        if (loc == null) {
-            throw new GameLoadException(NAME, id);
-        }
-
-        this.center = new ExLocation(Server.getWorld(loc.getWorld()), loc.getX(), loc.getY(), loc.getZ());
-
-        this.radius = file.getDoubleValue(id, RADIUS);
-        this.height = file.getDoubleValue(id, HEIGHT);
-
-        if (this.radius == null || this.height == null) {
-            throw new GameLoadException(NAME, id);
-        }
+    try {
+      loc = file.getLocationValue(id, CENTER);
+    } catch (WorldNotExistException ignored) {
     }
 
-    public boolean delete() {
-        this.setEnabled(false);
-        return WaitingGameManager.getInstance().getGameFile(center.getExWorld()).deleteGame(this.id);
+    if (loc == null) {
+      throw new GameLoadException(NAME, id);
     }
 
-    @Override
-    public boolean onUserDamageByUser(UserDamageByUserEvent e) {
+    this.center = new ExLocation(Server.getWorld(loc.getWorld()), loc.getX(), loc.getY(),
+        loc.getZ());
 
-        ExWorld world = e.getUser().getExWorld();
+    this.radius = file.getDoubleValue(id, RADIUS);
+    this.height = file.getDoubleValue(id, HEIGHT);
 
-        if (!this.center.getExWorld().equals(world)) {
-            return false;
-        }
-
-        Location loc = e.getUser().getLocation();
-        Location damagerLoc = e.getUserDamager().getLocation();
-
-        Location centerZero = this.center.clone().add(0, -this.center.getY(), 0);
-
-        double distanceXZ = loc.clone().add(0, -loc.getY(), 0).distance(centerZero);
-        double deltaY = loc.getY() - this.center.getY();
-
-        double damagerDistanceXZ = damagerLoc.clone().add(0, -damagerLoc.getY(), 0).distance(centerZero);
-        double damagerDeltaY = damagerLoc.getY() - this.center.getY();
-
-        if (distanceXZ <= this.radius && deltaY >= 0 && deltaY <= this.height && damagerDistanceXZ <= this.radius && damagerDeltaY >= 0 && damagerDeltaY <= this.height) {
-            e.setDamage(0);
-            return true;
-        }
-
-        return false;
+    if (this.radius == null || this.height == null) {
+      throw new GameLoadException(NAME, id);
     }
+  }
+
+  public boolean delete() {
+    this.setEnabled(false);
+    return WaitingGameManager.getInstance().getGameFile(center.getExWorld()).deleteGame(this.id);
+  }
+
+  @Override
+  public boolean onUserDamageByUser(UserDamageByUserEvent e) {
+
+    ExWorld world = e.getUser().getExWorld();
+
+    if (!this.center.getExWorld().equals(world)) {
+      return false;
+    }
+
+    Location loc = e.getUser().getLocation();
+    Location damagerLoc = e.getUserDamager().getLocation();
+
+    Location centerZero = this.center.clone().add(0, -this.center.getY(), 0);
+
+    double distanceXZ = loc.clone().add(0, -loc.getY(), 0).distance(centerZero);
+    double deltaY = loc.getY() - this.center.getY();
+
+    double damagerDistanceXZ = damagerLoc.clone().add(0, -damagerLoc.getY(), 0)
+        .distance(centerZero);
+    double damagerDeltaY = damagerLoc.getY() - this.center.getY();
+
+    if (distanceXZ <= this.radius && deltaY >= 0 && deltaY <= this.height
+        && damagerDistanceXZ <= this.radius && damagerDeltaY >= 0 && damagerDeltaY <= this.height) {
+      e.setDamage(0);
+      return true;
+    }
+
+    return false;
+  }
 }
