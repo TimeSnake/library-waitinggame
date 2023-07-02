@@ -1,19 +1,20 @@
+plugins {
+  id 'java-library'
+  id 'maven-publish'
+  id('io.papermc.paperweight.userdev')
+  id('xyz.jpenilla.run-paper')
+  id('com.github.johnrengelman.shadow')
+}
+
 group = project.group
-version = '1.0-SNAPSHOT'
-archivesBaseName = 'library-waiting_game'
+version = '1-1.0'
 var projectId = 40
 
 repositories {
   mavenLocal()
   mavenCentral()
   maven {
-    url = uri 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-  }
-  maven {
     url = uri 'https://papermc.io/repo/repository/maven-public/'
-  }
-  maven {
-    url = uri 'https://repo.maven.apache.org/maven2/'
   }
 }
 
@@ -30,9 +31,22 @@ dependencies {
   compileOnly project(':library-basic')
   compileOnly project(':library-chat')
 
-  compileOnly project.paper_api
-  compileOnly project.spigot_api
-  compileOnly project.spigot
+  paperweight.paperDevBundle(project.paperweight_version)
+}
+
+tasks {
+  assemble {
+    dependsOn(reobfJar)
+  }
+
+  compileJava {
+    options.encoding = "UTF-8"
+    options.release.set(17)
+  }
+
+  javadoc {
+    options.encoding = "UTF-8"
+  }
 }
 
 publishing {
