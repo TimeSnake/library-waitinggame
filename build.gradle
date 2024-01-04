@@ -38,7 +38,7 @@ dependencies {
   compileOnly "de.timesnake:channel-bukkit:3.0.6"
   compileOnly "de.timesnake:channel-api:3.0.6"
 
-  compileOnly "de.timesnake:library-extension:1.2"
+  compileOnly "de.timesnake:library-permissions:1.0"
   compileOnly "de.timesnake:library-basic:1.2.2"
   compileOnly "de.timesnake:library-chat:1.1"
 
@@ -49,11 +49,14 @@ configurations.configureEach {
   resolutionStrategy.dependencySubstitution {
     if (project.parent != null) {
       substitute module("de.timesnake:basic-bukkit") using project(":basic-bukkit")
+
       substitute module("de.timesnake:database-bukkit") using project(":database-bukkit")
       substitute module("de.timesnake:database-api") using project(":database-api")
+
       substitute module("de.timesnake:channel-bukkit") using project(":channel-bukkit")
       substitute module("de.timesnake:channel-api") using project(":channel-api")
-      substitute module("de.timesnake:library-extension") using project(":library-extension")
+
+      substitute module("de.timesnake:library-permissions") using project(":library-permissions")
       substitute module("de.timesnake:library-basic") using project(":library-basic")
       substitute module("de.timesnake:library-chat") using project(":library-chat")
     }
