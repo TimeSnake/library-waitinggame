@@ -7,17 +7,19 @@ package de.timesnake.library.waitinggames;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.waitinggames.games.JumpRun;
 import de.timesnake.library.waitinggames.games.MlgWater;
 import de.timesnake.library.waitinggames.games.PunchArea;
 import de.timesnake.library.waitinggames.games.WaitingGame;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class WaitingGameManager {
 
@@ -26,6 +28,9 @@ public class WaitingGameManager {
   }
 
   private static WaitingGameManager instance;
+
+  private final Logger logger = LogManager.getLogger("waiting-game.manager");
+
   private final HashMap<ExWorld, GameFile> gameFilesByWorld = new HashMap<>();
   private final HashMap<ExWorld, List<WaitingGame>> gamesByWorld = new HashMap<>();
 
@@ -67,17 +72,17 @@ public class WaitingGameManager {
             }
           }
         } catch (GameLoadException e) {
-          Loggers.GAME.warning(e.getMessage());
+          this.logger.warn(e.getMessage());
         }
       }
 
       this.gamesByWorld.put(entry.getKey(), games);
 
-      Loggers.GAME.info("Loaded waiting games in world " + entry.getKey().getName() + ": " +
-          Arrays.toString(ids.toArray()));
+      this.logger.info("Loaded waiting games in world '{}': {}", entry.getKey().getName(),
+          ids.stream().map(String::valueOf).collect(Collectors.joining(", ")));
     }
 
-    Loggers.GAME.info("Loaded waiting game manager");
+    this.logger.info("Loaded waiting game manager");
   }
 
   public GameFile getGameFile(ExWorld world) {
