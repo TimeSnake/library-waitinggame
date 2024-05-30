@@ -4,102 +4,42 @@
 
 package de.timesnake.library.waitinggames.games;
 
-import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
-import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
-import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.library.basic.util.Tuple;
-import de.timesnake.library.waitinggames.GameFile;
-import de.timesnake.library.waitinggames.GameLoadException;
-import de.timesnake.library.waitinggames.WaitingGameManager;
-import org.bukkit.Location;
+import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.world.SimpleLocation;
 
 public class PunchArea extends WaitingGame {
 
-  public static final String NAME = "punch_area";
+  private final SimpleLocation center;
+  private final double radius;
+  private final double height;
 
-  private static final String CENTER = "center";
-  private static final String RADIUS = "radius";
-  private static final String HEIGHT = "height";
-
-  private final ExLocation center;
-  private final Double radius;
-  private final Double height;
-
-  public PunchArea(ExLocation center, Double radius, Double height) {
+  public PunchArea(String name, SimpleLocation center, double radius, double height) {
+    super(name);
     this.center = center;
     this.radius = radius;
     this.height = height;
-
-    GameFile file = WaitingGameManager.getInstance().getGameFile(center.getExWorld());
-
-    super.id = file.addGame(NAME, new Tuple<>(CENTER, center), new Tuple<>(RADIUS, radius),
-        new Tuple<>(HEIGHT,
-            height));
   }
 
-  public PunchArea(GameFile file, int id) throws GameLoadException {
-    super(id);
-
-    if (!file.containsGame(id)) {
-      throw new GameLoadException(NAME, id);
-    }
-
-    Location loc = null;
-
-    try {
-      loc = file.getLocationValue(id, CENTER);
-    } catch (WorldNotExistException ignored) {
-    }
-
-    if (loc == null) {
-      throw new GameLoadException(NAME, id);
-    }
-
-    this.center = new ExLocation(Server.getWorld(loc.getWorld()), loc.getX(), loc.getY(),
-        loc.getZ());
-
-    this.radius = file.getDoubleValue(id, RADIUS);
-    this.height = file.getDoubleValue(id, HEIGHT);
-
-    if (this.radius == null || this.height == null) {
-      throw new GameLoadException(NAME, id);
-    }
+  public SimpleLocation getCenter() {
+    return center;
   }
 
-  public boolean delete() {
-    this.setEnabled(false);
-    return WaitingGameManager.getInstance().getGameFile(center.getExWorld()).deleteGame(this.id);
+  public double getRadius() {
+    return radius;
   }
 
-  @Override
-  public boolean onUserDamageByUser(UserDamageByUserEvent e) {
+  public double getHeight() {
+    return height;
+  }
 
-    ExWorld world = e.getUser().getExWorld();
-
-    if (!this.center.getExWorld().equals(world)) {
-      return false;
-    }
-
-    Location loc = e.getUser().getLocation();
-    Location damagerLoc = e.getUserDamager().getLocation();
-
-    Location centerZero = this.center.clone().add(0, -this.center.getY(), 0);
-
-    double distanceXZ = loc.clone().add(0, -loc.getY(), 0).distance(centerZero);
-    double deltaY = loc.getY() - this.center.getY();
-
-    double damagerDistanceXZ = damagerLoc.clone().add(0, -damagerLoc.getY(), 0)
-        .distance(centerZero);
-    double damagerDeltaY = damagerLoc.getY() - this.center.getY();
-
-    if (distanceXZ <= this.radius && deltaY >= 0 && deltaY <= this.height
-        && damagerDistanceXZ <= this.radius && damagerDeltaY >= 0 && damagerDeltaY <= this.height) {
-      e.setDamage(0);
-      return true;
-    }
-
-    return false;
+  public boolean containsLocation(User user, User userDamager) {
+    return user.getExWorld().equals(this.getWorld())
+           && userDamager.getExWorld().equals(this.getWorld())
+           && this.center.toLocation(this.getWorld()).distanceHorizontalSquared(user.getLocation()) <= this.radius * this.radius
+           && user.getLocation().getY() >= this.center.getY()
+           && user.getLocation().getY() - this.center.getY() <= this.height
+           && this.center.toLocation(this.getWorld()).distanceHorizontalSquared(userDamager.getLocation()) <= this.radius * this.radius
+           && userDamager.getLocation().getY() >= this.center.getY()
+           && userDamager.getLocation().getY() - this.center.getY() <= this.height;
   }
 }

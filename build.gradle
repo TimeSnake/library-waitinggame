@@ -38,6 +38,7 @@ dependencies {
   compileOnly "de.timesnake:channel-bukkit:4.+"
   compileOnly "de.timesnake:channel-api:4.+"
 
+  compileOnly "de.timesnake:library-commands:1.+"
   compileOnly "de.timesnake:library-permissions:1.+"
   compileOnly "de.timesnake:library-basic:1.+"
   compileOnly "de.timesnake:library-chat:1.+"
@@ -56,6 +57,7 @@ configurations.configureEach {
       substitute module("de.timesnake:channel-bukkit") using project(":channel-bukkit")
       substitute module("de.timesnake:channel-api") using project(":channel-api")
 
+      substitute module("de.timesnake:library-commands") using project(":library-commands")
       substitute module("de.timesnake:library-permissions") using project(":library-permissions")
       substitute module("de.timesnake:library-basic") using project(":library-basic")
       substitute module("de.timesnake:library-chat") using project(":library-chat")

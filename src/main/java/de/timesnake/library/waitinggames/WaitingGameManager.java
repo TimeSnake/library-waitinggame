@@ -4,104 +4,90 @@
 
 package de.timesnake.library.waitinggames;
 
+import de.timesnake.basic.bukkit.core.main.BasicBukkit;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.library.waitinggames.games.JumpRun;
-import de.timesnake.library.waitinggames.games.MlgWater;
-import de.timesnake.library.waitinggames.games.PunchArea;
-import de.timesnake.library.waitinggames.games.WaitingGame;
+import de.timesnake.basic.bukkit.util.world.ExWorldLoadEvent;
+import de.timesnake.basic.bukkit.util.world.ExWorldUnloadEvent;
+import de.timesnake.basic.bukkit.util.world.WorldManager;
+import de.timesnake.library.waitinggames.games.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
-import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-public class WaitingGameManager {
-
-  public static WaitingGameManager getInstance() {
-    return instance;
-  }
-
-  private static WaitingGameManager instance;
+public class WaitingGameManager implements Listener {
 
   private final Logger logger = LogManager.getLogger("waiting-game.manager");
 
-  private final HashMap<ExWorld, GameFile> gameFilesByWorld = new HashMap<>();
-  private final HashMap<ExWorld, List<WaitingGame>> gamesByWorld = new HashMap<>();
+  private final HashMap<WaitingGame.Type<?>, WaitingGameManagerBasis<?>> gameManagerByType = new HashMap<>();
 
   public WaitingGameManager() {
-    instance = this;
+    JumpRunManager jumpRunManager = new JumpRunManager();
+    this.gameManagerByType.put(jumpRunManager.getType(), jumpRunManager);
+
+    PunchAreaManager punchAreaManager = new PunchAreaManager();
+    this.gameManagerByType.put(punchAreaManager.getType(), punchAreaManager);
+
+    BuildAreaManager buildAreaManager = new BuildAreaManager();
+    this.gameManagerByType.put(buildAreaManager.getType(), buildAreaManager);
+
+    MlgWaterManager mlgWaterManager = new MlgWaterManager();
+    this.gameManagerByType.put(mlgWaterManager.getType(), mlgWaterManager);
 
     for (ExWorld world : Server.getWorlds()) {
-      File gameFile = new File(
-          world.getWorldFolder().getAbsolutePath() + File.separator + GameFile.NAME +
-              ".yml");
-      if (gameFile.exists()) {
-        this.gameFilesByWorld.put(world, new GameFile(world));
-      }
+      this.loadGamesOfWorld(world);
     }
 
-    for (Map.Entry<ExWorld, GameFile> entry : this.gameFilesByWorld.entrySet()) {
-
-      GameFile file = entry.getValue();
-
-      List<WaitingGame> games = new LinkedList<>();
-      List<Integer> ids = new LinkedList<>();
-
-      for (Integer id : file.getGameIds()) {
-        String type = file.getGameType(id);
-
-        try {
-          switch (type.toLowerCase()) {
-            case PunchArea.NAME -> {
-              games.add(new PunchArea(file, id));
-              ids.add(id);
-            }
-            case JumpRun.NAME -> {
-              games.add(new JumpRun(file, id));
-              ids.add(id);
-            }
-            case MlgWater.NAME -> {
-              games.add(new MlgWater(file, id));
-              ids.add(id);
-            }
-          }
-        } catch (GameLoadException e) {
-          this.logger.warn(e.getMessage());
-        }
-      }
-
-      this.gamesByWorld.put(entry.getKey(), games);
-
-      this.logger.info("Loaded waiting games in world '{}': {}", entry.getKey().getName(),
-          ids.stream().map(String::valueOf).collect(Collectors.joining(", ")));
-    }
-
-    this.logger.info("Loaded waiting game manager");
+    Server.registerListener(this, BasicBukkit.getPlugin());
   }
 
-  public GameFile getGameFile(ExWorld world) {
-    return this.gameFilesByWorld.get(world);
+  public void onDisable() {
+    for (WaitingGameManagerBasis<?> manager : this.gameManagerByType.values()) {
+      manager.saveAllGames();
+    }
   }
 
-  public boolean onUserDamage(UserDamageByUserEvent e) {
-    List<WaitingGame> games = this.gamesByWorld.get(e.getUser().getExWorld());
+  public <G extends WaitingGame> WaitingGameManagerBasis<G> getGameManager(WaitingGame.Type<G> type) {
+    return (WaitingGameManagerBasis<G>) gameManagerByType.get(type);
+  }
 
-    if (games == null) {
-      return false;
+  private void loadGamesOfWorld(ExWorld world) {
+    int number = 0;
+    for (WaitingGameManagerBasis<?> manager : this.gameManagerByType.values()) {
+      number += manager.loadGamesOfWorld(world);
     }
+    this.logger.info("Loaded waiting games in world '{}': {}", world.getName(), number);
+  }
 
-    boolean gameManaged = false;
-
-    for (WaitingGame game : games) {
-      gameManaged |= game.onUserDamageByUser(e);
+  private void saveGamesOfWorld(ExWorld world) {
+    for (WaitingGameManagerBasis<?> manager : this.gameManagerByType.values()) {
+      manager.saveGamesOfWorld(world);
     }
+    this.logger.info("Saved waiting games in world '{}'", world.getName());
+  }
 
-    return gameManaged;
+  public boolean onUserDamageByUser(UserDamageByUserEvent e) {
+    return this.gameManagerByType.values().stream().anyMatch(manager -> manager.onUserDamageByUser(e));
+  }
+
+  public boolean onUserDamage(UserDamageEvent e) {
+    return this.gameManagerByType.values().stream().anyMatch(manager -> manager.onUserDamage(e));
+  }
+
+  @EventHandler
+  public void onWorldLoad(ExWorldLoadEvent e) {
+    this.loadGamesOfWorld(e.getWorld());
+  }
+
+  @EventHandler
+  public void onWorldUnload(ExWorldUnloadEvent e) {
+    if (e.getActionType().equals(WorldManager.WorldUnloadActionType.UNLOAD)
+        || e.getActionType().equals(WorldManager.WorldUnloadActionType.RELOAD))
+      this.saveGamesOfWorld(e.getWorld());
   }
 }
