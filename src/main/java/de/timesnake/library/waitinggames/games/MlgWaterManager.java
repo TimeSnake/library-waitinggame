@@ -38,8 +38,9 @@ public class MlgWaterManager extends WaitingGameManagerBasis<MlgWater> implement
       .setDropable(false)
       .immutable()
       .onInteract(e -> this.getGameOfUser(e.getUser()).ifPresent(g -> {
-        g.removeUser(e.getUser(), true);
+        g.removeUser(e.getUser());
         e.getUser().showTDTitle("", "§wLeft", Duration.ofSeconds(2));
+        this.restoreUserInventory(e.getUser());
       }), true);
 
   public MlgWaterManager() {
@@ -61,8 +62,9 @@ public class MlgWaterManager extends WaitingGameManagerBasis<MlgWater> implement
         }
 
         Server.runTaskSynchrony(() -> {
+          this.removeUserFromAllGames(user);
           mlgWater.addUser(user);
-          mlgWater.storeUserInventory(user);
+          this.storeUserInventory(user);
 
           user.showTDTitle("", "§wMLG Water", Duration.ofSeconds(2));
 
