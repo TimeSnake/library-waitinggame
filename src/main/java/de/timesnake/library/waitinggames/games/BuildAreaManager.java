@@ -43,8 +43,9 @@ public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> {
       .setDropable(false)
       .immutable()
       .onInteract(e -> this.getGameOfUser(e.getUser()).ifPresent(g -> {
-        g.removeUser(e.getUser(), true);
+        g.removeUser(e.getUser());
         e.getUser().showTDTitle("", "§wLeft", Duration.ofSeconds(2));
+        this.restoreUserInventory(e.getUser());
       }), true);
 
   public BuildAreaManager() {
@@ -65,8 +66,9 @@ public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> {
         }
 
         Server.runTaskSynchrony(() -> {
+          this.removeUserFromAllGames(user);
           buildArea.addUser(user);
-          buildArea.storeUserInventory(user);
+          this.storeUserInventory(user);
 
           user.showTitle(Component.empty(), Component.text("Build Area", ExTextColor.GREEN),
               Duration.ofSeconds(2));

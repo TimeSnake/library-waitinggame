@@ -6,9 +6,7 @@ package de.timesnake.library.waitinggames.games;
 
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.library.basic.util.UserMap;
 import de.timesnake.library.basic.util.UserSet;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Set;
 
@@ -19,7 +17,6 @@ public abstract class WaitingGame {
   protected transient ExWorld world;
 
   protected transient UserSet<User> users;
-  protected transient UserMap<User, ItemStack[]> inventoriesByUser;
 
   public WaitingGame(String name) {
     this.name = name;
@@ -27,7 +24,6 @@ public abstract class WaitingGame {
 
   protected void init() {
     this.users = new UserSet<>();
-    this.inventoriesByUser = new UserMap<>();
   }
 
   public String getName() {
@@ -42,12 +38,8 @@ public abstract class WaitingGame {
     this.users.add(user);
   }
 
-  public void removeUser(User user, boolean restoreInventory) {
-    this.users.remove(user);
-    if (restoreInventory) {
-      user.clearInventory();
-      this.restoreUserInventory(user);
-    }
+  public boolean removeUser(User user) {
+    return this.users.remove(user);
   }
 
   public Set<User> getUsers() {
@@ -56,14 +48,6 @@ public abstract class WaitingGame {
 
   public boolean containsUser(User user) {
     return users.contains(user);
-  }
-
-  public void storeUserInventory(User user) {
-    this.inventoriesByUser.put(user, user.getInventory().getContents());
-  }
-
-  public void restoreUserInventory(User user) {
-    user.getInventory().setContents(this.inventoriesByUser.remove(user));
   }
 
   public static class Type<G extends WaitingGame> {

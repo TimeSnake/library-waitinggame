@@ -35,8 +35,9 @@ public class JumpRunManager extends WaitingGameManagerBasis<JumpRun> implements 
       .setDropable(false)
       .immutable()
       .onInteract(e -> this.getGameOfUser(e.getUser()).ifPresent(g -> {
-        g.removeUser(e.getUser(), true);
+        g.removeUser(e.getUser());
         e.getUser().showTDTitle("", "§wLeft", Duration.ofSeconds(2));
+        this.restoreUserInventory(e.getUser());
       }), true);
 
   public JumpRunManager() {
@@ -62,7 +63,7 @@ public class JumpRunManager extends WaitingGameManagerBasis<JumpRun> implements 
             Server.runTaskSynchrony(() -> {
               this.removeUserFromAllGames(user);
               jumpRun.addUser(user);
-              jumpRun.storeUserInventory(user);
+              this.storeUserInventory(user);
 
               user.showTitle(Component.empty(), Component.text("Jump'n Run", ExTextColor.BLUE),
                   Duration.ofSeconds(2));
@@ -75,7 +76,8 @@ public class JumpRunManager extends WaitingGameManagerBasis<JumpRun> implements 
             }, BasicBukkit.getPlugin());
           } else if (jumpRun.containsUser(user) && index == jumpRun.getCheckpoints().size() - 1) {
             Server.runTaskSynchrony(() -> {
-              jumpRun.removeUser(user, true);
+              jumpRun.removeUser(user);
+              this.restoreUserInventory(user);
               user.showTDTitle("§hFinished", "", Duration.ofSeconds(2));
               Server.broadcastTDMessage(Plugin.WAITING_GAME,
                   user.getTDChatName() + "§p finished jump'n run §v" + jumpRun.getName());

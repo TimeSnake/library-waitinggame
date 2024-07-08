@@ -11,8 +11,10 @@ import de.timesnake.basic.bukkit.util.user.event.UserDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.library.basic.util.GsonFile;
+import de.timesnake.library.basic.util.UserMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.*;
@@ -26,6 +28,8 @@ public abstract class WaitingGameManagerBasis<G extends WaitingGame> {
 
   protected final WaitingGame.Type<G> type;
   protected final Map<ExWorld, Set<G>> gamesByWorld = new ConcurrentHashMap<>();
+
+  protected transient UserMap<User, ItemStack[]> inventoriesByUser = new UserMap<>();
 
   public WaitingGameManagerBasis(WaitingGame.Type<G> type) {
     this.type = type;
@@ -58,7 +62,7 @@ public abstract class WaitingGameManagerBasis<G extends WaitingGame> {
 
   public void saveGamesOfWorld(ExWorld world) {
     Set<G> games = this.gamesByWorld.remove(world);
-    if (!games.isEmpty()) {
+    if (games != null && !games.isEmpty()) {
       this.newGsonFile(world).write(games);
       this.logger.info("Saved {} waiting games in world '{}'", type.getName(), world.getName());
     }
@@ -89,13 +93,27 @@ public abstract class WaitingGameManagerBasis<G extends WaitingGame> {
   protected void removeUserFromAllGames(User user) {
     for (Set<G> games : this.gamesByWorld.values()) {
       for (G game : games) {
-        game.removeUser(user, this.restoreInventory());
+        if (game.removeUser(user) && this.restoreInventory()) {
+          this.restoreUserInventory(user);
+        }
       }
     }
   }
 
   protected boolean restoreInventory() {
     return true;
+  }
+
+  public void storeUserInventory(User user) {
+    this.inventoriesByUser.put(user, user.getInventory().getContents());
+  }
+
+  public void restoreUserInventory(User user) {
+    user.clearInventory();
+    ItemStack[] items = this.inventoriesByUser.remove(user);
+    if (items != null) {
+      user.getInventory().setContents(items);
+    }
   }
 
   private GsonFile newGsonFile(ExWorld world) {
