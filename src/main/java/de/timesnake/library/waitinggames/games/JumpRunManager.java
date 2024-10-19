@@ -24,13 +24,15 @@ import java.util.HashSet;
 
 public class JumpRunManager extends WaitingGameManagerBasis<JumpRun> implements Listener {
 
-  private final ExItemStack startItem = new ExItemStack(Material.WHITE_DYE, "§6Start")
+  private final ExItemStack startItem = new ExItemStack(Material.WHITE_DYE)
+      .setDisplayName("§6Start")
       .setMoveable(false)
       .setDropable(false)
       .immutable()
       .onInteract(e -> this.getGameOfUser(e.getUser()).ifPresent(g -> g.teleportToLastCheckpoint(e.getUser())), true);
 
-  private final ExItemStack leaveItem = new ExItemStack(8, Material.RED_DYE, "§cLeave")
+  private final ExItemStack leaveItem = new ExItemStack(8, Material.RED_DYE)
+      .setDisplayName("§cLeave")
       .setMoveable(false)
       .setDropable(false)
       .immutable()

@@ -49,6 +49,12 @@ public class JumpRun extends WaitingGame {
     this.checkpointIndexByUser.put(user, 0);
   }
 
+  @Override
+  public boolean removeUser(User user) {
+    this.checkpointIndexByUser.remove(user);
+    return super.removeUser(user);
+  }
+
   public UserMap<User, Integer> getCheckpointIndexByUser() {
     return checkpointIndexByUser;
   }
