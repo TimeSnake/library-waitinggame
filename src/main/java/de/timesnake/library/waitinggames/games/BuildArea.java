@@ -24,6 +24,12 @@ public class BuildArea extends WaitingGame {
     this.buildingMaterial = buildingMaterial;
   }
 
+  @Override
+  protected void init() {
+    super.init();
+    this.area.setWorld(this.world);
+  }
+
   public SimpleFacingLocation getStart() {
     return start;
   }

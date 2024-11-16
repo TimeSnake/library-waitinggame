@@ -69,7 +69,7 @@ public class WaitingGameCreateCmd extends IncCommandListener {
   private IncCommandContext handleBuildArea(Sender sender, Arguments<Argument> args, IncCommandContext context) {
     args.isLengthEqualsElseExit(3, true);
     context.addOption(MATERIAL, args.get(2).toMaterialOrExit(true));
-    this.sendSelectionTo(sender, this.createSelection(LOCATION).title("start"));
+    this.sendSelectionTo(sender, this.createSelection(LOCATION).title("Start").addValues("set"));
     return context;
   }
 

@@ -14,16 +14,15 @@ import de.timesnake.basic.bukkit.util.user.event.UserBlockPlaceEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.library.chat.ExTextColor;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Optional;
 
-public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> {
+public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> implements Listener {
 
   private static final ExItemStack BUILDING_TOOL = new ExItemStack(Material.IRON_PICKAXE)
       .unbreakable()
@@ -50,6 +49,7 @@ public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> {
 
   public BuildAreaManager() {
     super(WaitingGame.Type.BUILD_AREA);
+    Server.registerListener(this, BasicBukkit.getPlugin());
   }
 
   @EventHandler
@@ -70,8 +70,7 @@ public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> {
           buildArea.addUser(user);
           this.storeUserInventory(user);
 
-          user.showTitle(Component.empty(), Component.text("Build Area", ExTextColor.GREEN),
-              Duration.ofSeconds(2));
+          user.showTDTitle("", "§5Build Area", Duration.ofSeconds(2));
 
           user.clearInventory();
           user.setItem(1, buildArea.getBuildingItemStack());
@@ -80,6 +79,7 @@ public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> {
           user.setItem(5, startItem);
           user.setItem(8, leaveItem);
         }, BasicBukkit.getPlugin());
+        break;
       }
     }
   }
@@ -97,7 +97,6 @@ public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> {
     }
 
     e.setCancelled(CancelPriority.HIGH, false);
-    e.setBuild(true);
   }
 
   @EventHandler
@@ -112,6 +111,7 @@ public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> {
       return;
     }
 
+    e.setDropItems(false);
     e.setCancelled(CancelPriority.HIGH, false);
   }
 }
