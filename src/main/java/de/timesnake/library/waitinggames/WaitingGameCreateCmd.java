@@ -11,6 +11,7 @@ import de.timesnake.basic.bukkit.util.world.ExPolygon;
 import de.timesnake.basic.bukkit.util.world.SimpleFacingLocation;
 import de.timesnake.basic.bukkit.util.world.SimpleLocation;
 import de.timesnake.library.chat.Code;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.inchat.IncCommandContext;
 import de.timesnake.library.commands.inchat.IncCommandOption;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class WaitingGameCreateCmd extends IncCommandListener {
 
-  private final Code perm = Plugin.WAITING_GAME.createPermssionCode("waiting_game.create");
+  private final Code perm = Plugin.SERVER.createPermssionCode("waiting_game.create");
 
   private final WaitingGameManager waitingGameManager;
 

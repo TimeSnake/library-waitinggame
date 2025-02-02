@@ -12,7 +12,7 @@ import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.library.chat.ExTextColor;
-import de.timesnake.library.waitinggames.Plugin;
+import de.timesnake.library.chat.Plugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -81,7 +81,7 @@ public class JumpRunManager extends WaitingGameManagerBasis<JumpRun> implements 
               jumpRun.removeUser(user);
               this.restoreUserInventory(user);
               user.showTDTitle("§hFinished", "", Duration.ofSeconds(2));
-              Server.broadcastTDMessage(Plugin.WAITING_GAME,
+              Server.broadcastTDMessage(Plugin.SERVER,
                   user.getTDChatName() + "§p finished jump'n run §v" + jumpRun.getName());
             }, BasicBukkit.getPlugin());
           } else if (jumpRun.containsUser(user)) {
@@ -91,7 +91,7 @@ public class JumpRunManager extends WaitingGameManagerBasis<JumpRun> implements 
                 return;
               }
               jumpRun.getCheckpointIndexByUser().put(user, finalIndex);
-              user.sendPluginTDMessage(Plugin.WAITING_GAME, "§sSaved checkpoint §v" + finalIndex);
+              user.sendPluginTDMessage(Plugin.SERVER, "§sSaved checkpoint §v" + finalIndex);
             }, BasicBukkit.getPlugin());
           }
           return;

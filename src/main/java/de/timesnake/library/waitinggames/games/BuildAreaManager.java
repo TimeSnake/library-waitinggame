@@ -14,7 +14,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserBlockPlaceEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.library.waitinggames.Plugin;
+import de.timesnake.library.chat.Plugin;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -94,7 +94,7 @@ public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> impleme
     }
 
     if (!buildAreaOptional.get().contains(ExLocation.fromLocation(e.getBlock().getLocation()))) {
-      e.getUser().sendPluginTDMessage(Plugin.WAITING_GAME, "§wYou can not build here");
+      e.getUser().sendPluginTDMessage(Plugin.SERVER, "§wYou can not build here");
       return;
     }
 
@@ -110,7 +110,7 @@ public class BuildAreaManager extends WaitingGameManagerBasis<BuildArea> impleme
     }
 
     if (!buildAreaOptional.get().contains(ExLocation.fromLocation(e.getBlock().getLocation()))) {
-      e.getUser().sendPluginTDMessage(Plugin.WAITING_GAME, "§wYou can not build here");
+      e.getUser().sendPluginTDMessage(Plugin.SERVER, "§wYou can not build here");
       return;
     }
 
