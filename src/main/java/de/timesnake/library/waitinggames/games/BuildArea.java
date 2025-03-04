@@ -5,19 +5,19 @@
 package de.timesnake.library.waitinggames.games;
 
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
+import de.timesnake.basic.bukkit.util.world.BlockPolygon;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.basic.bukkit.util.world.ExPolygon;
 import de.timesnake.basic.bukkit.util.world.SimpleFacingLocation;
 import org.bukkit.Material;
 
 public class BuildArea extends WaitingGame {
 
   private final SimpleFacingLocation start;
-  private final ExPolygon area;
+  private final BlockPolygon area;
   private final Material buildingMaterial;
   private transient ExItemStack buildingItem;
 
-  public BuildArea(String name, SimpleFacingLocation start, ExPolygon area, Material buildingMaterial) {
+  public BuildArea(String name, SimpleFacingLocation start, BlockPolygon area, Material buildingMaterial) {
     super(name);
     this.start = start;
     this.area = area;
@@ -34,7 +34,7 @@ public class BuildArea extends WaitingGame {
     return start;
   }
 
-  public ExPolygon getArea() {
+  public BlockPolygon getArea() {
     return area;
   }
 

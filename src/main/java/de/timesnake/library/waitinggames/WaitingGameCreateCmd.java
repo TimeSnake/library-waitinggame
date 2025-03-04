@@ -7,7 +7,7 @@ package de.timesnake.library.waitinggames;
 import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
 import de.timesnake.basic.bukkit.util.chat.cmd.IncCommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
-import de.timesnake.basic.bukkit.util.world.ExPolygon;
+import de.timesnake.basic.bukkit.util.world.BlockPolygon;
 import de.timesnake.basic.bukkit.util.world.SimpleFacingLocation;
 import de.timesnake.basic.bukkit.util.world.SimpleLocation;
 import de.timesnake.library.chat.Code;
@@ -150,7 +150,7 @@ public class WaitingGameCreateCmd extends IncCommandListener {
         this.sendSelectionTo(sender, this.createSelection(ADD_POINTS).addValues("add", "done"));
       } else if (v.equals("done")) {
         BuildArea buildArea = new BuildArea(context.getOption(NAME), context.getOption(LOCATION),
-            new ExPolygon(sender.getUser().getExWorld(), context.getOption(POINTS).stream()
+            new BlockPolygon(sender.getUser().getExWorld(), context.getOption(POINTS).stream()
                 .map(p -> p.toLocation(sender.getUser().getExWorld())).toList()),
             context.getOption(MATERIAL));
         this.waitingGameManager.getGameManager(WaitingGame.Type.BUILD_AREA).addGame(buildArea,
