@@ -12,7 +12,7 @@ plugins {
 
 
 group = "de.timesnake"
-version = "3.0.0"
+version = "4.0.0"
 var projectId = 40
 
 repositories {
@@ -29,37 +29,20 @@ repositories {
 }
 
 dependencies {
-    compileOnly("de.timesnake:basic-bukkit:4.+")
-
-    compileOnly("de.timesnake:database-bukkit:4.+")
-    compileOnly("de.timesnake:database-api:4.+")
-
-    compileOnly("de.timesnake:channel-bukkit:5.+")
-    compileOnly("de.timesnake:channel-api:5.+")
-
-    compileOnly("de.timesnake:library-commands:2.+")
-    compileOnly("de.timesnake:library-permissions:2.+")
-    compileOnly("de.timesnake:library-basic:2.+")
-    compileOnly("de.timesnake:library-chat:2.+")
+    implementation("de.timesnake:basic-bukkit:5.+")
 
     paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 }
 
-configurations.configureEach {
-    resolutionStrategy.dependencySubstitution {
-        if (project.parent != null) {
-            substitute(module("de.timesnake:basic-bukkit")).using(project(":cores:basic-bukkit"))
-
-            substitute(module("de.timesnake:database-bukkit")).using(project(":database:database-bukkit"))
-            substitute(module("de.timesnake:database-api")).using(project(":database:database-api"))
-
-            substitute(module("de.timesnake:channel-bukkit")).using(project(":channel:channel-bukkit"))
-            substitute(module("de.timesnake:channel-api")).using(project(":channel:channel-api"))
-
-            substitute(module("de.timesnake:library-commands")).using(project(":libraries:library-commands"))
-            substitute(module("de.timesnake:library-permissions")).using(project(":libraries:library-permissions"))
-            substitute(module("de.timesnake:library-basic")).using(project(":libraries:library-basic"))
-            substitute(module("de.timesnake:library-chat")).using(project(":libraries:library-chat"))
+configurations.all {
+    resolutionStrategy.dependencySubstitution.all {
+        requested.let {
+            if (it is ModuleComponentSelector && it.group == "de.timesnake") {
+                val targetProject = findProject(":${it.module}")
+                if (targetProject != null) {
+                    useTarget(targetProject)
+                }
+            }
         }
     }
 }
